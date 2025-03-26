@@ -1,5 +1,5 @@
 /**
- * RO Libby v1.0.1
+ * RO Libby v1.0.2
  * A collection of reusable JS utility functions that can be used in any project.
  * Released under the MIT license
  */
@@ -38,13 +38,7 @@ const _find = (el, parent = document) => {
  * @returns {Element | null} The element or null if not found
  */
 const _el = (selector, parent = document) => {
-
-    // If for some reason we get an HTML element, return it
-    if (selector instanceof HTMLElement) {
-        return selector;
-    }
-
-    return parent.querySelector(selector);
+    return _find(selector, parent)[0];
 }
 
 /**
@@ -54,13 +48,7 @@ const _el = (selector, parent = document) => {
  * @returns {NodeList | Element[]} The elements
  */
 const _els = (selector, parent = document) => {
-
-    // If for some reason we get an HTML element, return it as an array
-    if (selector instanceof HTMLElement) {
-        return [selector];
-    }
-
-    return parent.querySelectorAll(selector);
+    return _find(selector, parent);
 };
 
 /**
