@@ -15,7 +15,8 @@ import {
     _persist as _persistType,
     _persistGet as _persistGetType,
     _persistRemove as _persistRemoveType,
-    _libbyLog as _libbyLogType
+    _libbyLog as _libbyLogType,
+    _libbyInit as _libbyInitType
 } from './libby.js'
 
 declare global {
@@ -36,4 +37,5 @@ declare global {
     var _persistRemove: typeof _persistRemoveType;
     var _libbyLog: typeof _libbyLogType;
     var _libbyReady: boolean;
+    var _libbyInit: typeof _libbyInitType;
 }

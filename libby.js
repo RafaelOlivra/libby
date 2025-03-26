@@ -474,27 +474,30 @@ const _libbyLog = (...params) => {
 }
 
 // Add the functions to the window object
-window._debounce = _debounce;
-window._dispatch = _dispatch;
-window._el = _el;
-window._els = _els;
-window._on = _on;
-window._once = _once;
-window._is = _is;
-window._toggleClass = _toggleClass;
-window._addClass = _addClass;
-window._removeClass = _removeClass;
-window._toHTML = _toHTML;
-window._inViewport = _inViewport;
-window._persist = _persist;
-window._persistGet = _persistGet;
-window._persistRemove = _persistRemove;
-window._libbyLog = _libbyLog;
+const _libbyInit = () => {
+    window._debounce = _debounce;
+    window._dispatch = _dispatch;
+    window._el = _el;
+    window._els = _els;
+    window._on = _on;
+    window._once = _once;
+    window._is = _is;
+    window._toggleClass = _toggleClass;
+    window._addClass = _addClass;
+    window._removeClass = _removeClass;
+    window._toHTML = _toHTML;
+    window._inViewport = _inViewport;
+    window._persist = _persist;
+    window._persistGet = _persistGet;
+    window._persistRemove = _persistRemove;
+    window._libbyLog = _libbyLog;
+}
 
 // Dispatch a ready event when the window is loaded
 window.onload = function () {
-    _dispatch(window, "libby:ready");
+    _libbyInit();
     window._libbyReady = true;
+    _dispatch(window, "libby:ready");
 }
 
 // Export functions, utilized to setup TypeScript types
@@ -514,5 +517,6 @@ export {
     _persist,
     _persistGet,
     _persistRemove,
-    _libbyLog
+    _libbyLog,
+    _libbyInit
 };
