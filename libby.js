@@ -5,33 +5,37 @@
  */
 
 /**
- * Debounce a function
- * @https://gist.github.com/nmsdvid/8807205
- *
- * @param {function} func - The function to debounce
- * @param {number} wait - The wait time before the function is called
- * @param {boolean} [immediate=false] - Whether the function should be called immediately
- * @returns {function} The debounced function
- * */
-const _debounce = (func, wait, immediate = false) => {
-    var timeout;
-    _libbyLog("[_debounce] Debounce event set", wait);
-    return function () {
-        var context = this, args = arguments;
-        clearTimeout(timeout);
-        timeout = setTimeout(function () {
-            timeout = null;
-            if (!immediate) func.apply(context, args);
-        }, wait);
-        if (immediate && !timeout) func.apply(context, args);
-    };
+ * Find elements by matching a CSS selector or HTML element
+ * @param {string | Element | NodeList} el - The element(s) to find
+ * @param {string} selector - The CSS selector to match
+ * @param {Element | Document} [parent=document] - The parent element to search from
+ * @returns {NodeList | Element[]} The elements that match the selector
+ */
+const _find = (el, parent = document) => {
+    let els = [];
+
+    // Convert `el` to an array of elements
+    if (typeof el === "string") {
+        els = parent.querySelectorAll(el);
+    } else if (el instanceof Element) {
+        els = [el];
+    } else if (el instanceof NodeList) {
+        els = el;
+    }
+
+    // Log if no elements were found
+    if (els.length === 0) {
+        _libbyLog("[_find] No elements found:", el);
+    }
+
+    return els;
 }
 
 /**
  * Get an element by selector
  * @param {string} selector - CSS selector
- * @param {Element|Document} [parent=document] - Parent element to search from
- * @returns {Element|null} The element or null if not found
+ * @param {Element | Document} [parent=document] - Parent element to search from
+ * @returns {Element | null} The element or null if not found
  */
 const _el = (selector, parent = document) => {
 
@@ -46,12 +50,12 @@ const _el = (selector, parent = document) => {
 /**
  * Get multiple elements by selector
  * @param {string} selector - CSS selector
- * @param {Element|Document} [parent=document] - Parent element to search from
- * @returns {NodeList} The elements
+ * @param {Element | Document} [parent=document] - Parent element to search from
+ * @returns {NodeList | Element[]} The elements
  */
 const _els = (selector, parent = document) => {
 
-    // If for some reason we get an HTML element, return it as NodeList
+    // If for some reason we get an HTML element, return it as an array
     if (selector instanceof HTMLElement) {
         return [selector];
     }
@@ -67,29 +71,30 @@ const _els = (selector, parent = document) => {
  * @param {number} delay - The delay time before the event is dispatched
  */
 const _dispatch = (el, eventName, detail = {}, delay = 0) => {
-    if (typeof el === "string") {
-        el = document.querySelector(el);
-    }
+    const _el = _find(el)[0];
+
+    // Bail if no element was found
+    if (!_el) return;
 
     // Dispatch the event with a delay
     try {
         if (delay) {
             setTimeout(function () {
-                el.dispatchEvent(new CustomEvent(eventName, {
+                _el.dispatchEvent(new CustomEvent(eventName, {
                     detail: detail
                 }));
             }, delay);
         }
         // Dispatch the event immediately
         else {
-            el.dispatchEvent(new CustomEvent(eventName, {
+            _el.dispatchEvent(new CustomEvent(eventName, {
                 detail: detail
             }));
         }
 
         _libbyLog("[_dispatch]", eventName, delay);
     } catch (error) {
-        _libbyLog("[_dispatch] Error dispatching event:", error, eventName, delay, el);
+        _libbyLog("[_dispatch] Error dispatching event:", error, eventName, delay, _el);
     }
 };
 
@@ -104,30 +109,15 @@ const _dispatch = (el, eventName, detail = {}, delay = 0) => {
  * @returns {object[]} An array of event listeners
  */
 const _on = (el, eventName, callback) => {
-    let elements;
+    const els = _find(el);
 
-    // Handle different types of input
-    if (typeof el === "string") {
-        elements = document.querySelectorAll(el); // Select elements by CSS selector
-    } else if (el instanceof Element || el instanceof Window || el instanceof Document) {
-        elements = [el]; // Wrap single element into an array
-    } else if (el instanceof NodeList) {
-        elements = Array.from(el); // Convert NodeList to array
-    } else {
-        _libbyLog("[_on] Invalid element:", el);
-        return;
-    }
-
-    // Check if any elements were found
-    if (elements.length === 0) {
-        _libbyLog("[_on] No elements found:", el);
-        return;
-    }
+    // Bail if no elements were found
+    if (els.length === 0) return;
 
     const eventListeners = [];
 
     // Add event listener to each element
-    elements.forEach(element => {
+    els.forEach(element => {
         const eventListener = (e) => {
             callback(e, e.detail); // Invoke the callback with event and optional detail
         };
@@ -157,30 +147,15 @@ const _on = (el, eventName, callback) => {
  * @returns {object[]} An array of event listeners
  */
 const _once = (el, eventName, callback) => {
-    let elements;
+    const els = _find(el);
 
-    // Handle different types of input
-    if (typeof el === "string") {
-        elements = document.querySelectorAll(el); // Select elements by CSS selector
-    } else if (el instanceof Element || el instanceof Window || el instanceof Document) {
-        elements = [el]; // Wrap single element into an array
-    } else if (el instanceof NodeList) {
-        elements = Array.from(el); // Convert NodeList to array
-    } else {
-        _libbyLog("[_once] Invalid element:", el);
-        return;
-    }
-
-    // Check if any elements were found
-    if (elements.length === 0) {
-        _libbyLog("[_once] No elements found:", el);
-        return;
-    }
+    // Bail if no elements were found
+    if (els.length === 0) return;
 
     const eventListeners = [];
 
     // Add event listener to each element
-    elements.forEach(element => {
+    els.forEach(element => {
         const eventListener = (e) => {
             callback(e, e.detail); // Invoke the callback with event and optional detail
         };
@@ -208,16 +183,12 @@ const _once = (el, eventName, callback) => {
  * @returns {boolean} Whether the element matches the selector
  * */
 const _is = (el, selector) => {
-    if (typeof el === "string") {
-        el = document.querySelector(el);
-    }
+    const _el = _find(el)[0];
 
-    if (!el) {
-        _libbyLog("[_is] element not found:", el);
-        return;
-    }
+    // Bail if no element was found
+    if (!_el) return;
 
-    return el.matches(selector);
+    return _el.matches(selector);
 }
 
 /**
@@ -228,25 +199,16 @@ const _is = (el, selector) => {
  * @param {boolean | null} [toggleOnValue=null] - Whether to add/remove classes based on this value, or toggle if null
  */
 const _toggleClass = (el, classNames, toggleOnValue = null) => {
-    let elements;
+    const els = _find(el);
 
-    // Convert `el` to an array of elements
-    if (typeof el === "string") {
-        elements = document.querySelectorAll(el);
-    } else if (el instanceof Element) {
-        elements = [el];
-    } else if (el instanceof NodeList) {
-        elements = Array.from(el);
-    } else {
-        _libbyLog("[_toggleClass] Invalid element:", el);
-        return;
-    }
+    // Bail if no elements were found
+    if (els.length === 0) return;
 
     // Ensure classNames is an array
     const classes = Array.isArray(classNames) ? classNames : classNames.split(/\s+/);
 
     // Toggle classes for each element
-    elements.forEach(element => {
+    els.forEach(element => {
         classes.forEach(className => {
             if (toggleOnValue === null) {
                 element.classList.toggle(className);
@@ -306,15 +268,44 @@ const _toHTML = (str, decode = true) => {
 }
 
 /**
+ * Debounce a function
+ * @https://gist.github.com/nmsdvid/8807205
+ *
+ * @param {function} func - The function to debounce
+ * @param {number} wait - The wait time before the function is called
+ * @param {boolean} [immediate=false] - Whether the function should be called immediately
+ * @returns {function} The debounced function
+ * */
+const _debounce = (func, wait, immediate = false) => {
+    var timeout;
+    _libbyLog("[_debounce] Debounce event set", wait);
+    return function () {
+        var context = this, args = arguments;
+        clearTimeout(timeout);
+        timeout = setTimeout(function () {
+            timeout = null;
+            if (!immediate) func.apply(context, args);
+        }, wait);
+        if (immediate && !timeout) func.apply(context, args);
+    };
+}
+
+/**
  * Check if an element is visible in the viewport of a given container
  * 
- * @param {Element} el - The element to check
- * @param {Element | Window} target - The container element (e.g., scrollable div). Use `window` for the default viewport.
+ * @param {Element | string} el - The element to check
+ * @param {Element | Window | string} target - The container element (e.g., scrollable div). Use `window` for the default viewport.
  * @param {number} offset - Offset to adjust the visibility threshold (default is half of the current innerHeight - From bottom)
  * @returns {boolean} - True if the element is in the viewport of the target, false otherwise
  */
 const _inViewport = (el, target, offset = window.innerHeight / 2) => {
-    const rect = el.getBoundingClientRect();
+    const _el = _find(el)[0];
+    const _target = _find(target)[0];
+
+    // Bail if no element was found
+    if (!_el || !_target) return;
+
+    const rect = _el.getBoundingClientRect();
 
     if (target === window) {
         return (
@@ -324,7 +315,7 @@ const _inViewport = (el, target, offset = window.innerHeight / 2) => {
             rect.right > 0
         );
     } else {
-        const targetRect = target.getBoundingClientRect();
+        const targetRect = _target.getBoundingClientRect();
 
         return (
             rect.top < targetRect.bottom - offset &&
@@ -465,7 +456,6 @@ const _persistRemove = (key) => {
     }
 };
 
-
 // Log messages to the console if the body has a .dev class
 const _libbyLog = (...params) => {
     if (_is("body", ".dev")) {
@@ -477,6 +467,7 @@ const _libbyLog = (...params) => {
 const _libbyInit = () => {
     window._debounce = _debounce;
     window._dispatch = _dispatch;
+    window._find = _find;
     window._el = _el;
     window._els = _els;
     window._on = _on;
@@ -502,7 +493,7 @@ window.onload = function () {
 
 // Export functions, utilized to setup TypeScript types
 export {
-    _debounce,
+    _find,
     _el,
     _els,
     _dispatch,
@@ -513,6 +504,7 @@ export {
     _addClass,
     _removeClass,
     _toHTML,
+    _debounce,
     _inViewport,
     _persist,
     _persistGet,
