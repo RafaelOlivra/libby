@@ -1,5 +1,5 @@
 /**
- * RO Libby v1.0.2
+ * RO Libby v1.0.4
  * A collection of reusable JS utility functions that can be used in any project.
  * Released under the MIT license
  */
