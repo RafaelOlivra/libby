@@ -42,7 +42,7 @@ const _find = (el, parent = document) => {
  * @returns {Element | null} The element or null if not found
  */
 const _el = (selector, parent = document) => {
-    return _find(selector, parent)[0];
+    return _find(selector, parent)[0] || null;
 }
 
 /**
