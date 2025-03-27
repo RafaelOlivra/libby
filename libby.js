@@ -5,8 +5,10 @@
  */
 
 /**
- * Find elements by matching a CSS selector or HTML element
- * @param {string | Element | NodeList} el - The element(s) to find
+ * Find elements by matching a CSS selector or Native element
+ * Note: This function will always return an array of elements, even if only one element is found.
+ * For cases where the element is a Window or Document, the result will be an array with the reference to the element.
+ * @param {string | Window | Document | Element | NodeList} el - The element(s) to find
  * @param {string} selector - The CSS selector to match
  * @param {Element | Document} [parent=document] - The parent element to search from
  * @returns {NodeList | Element[]} The elements that match the selector
@@ -21,11 +23,13 @@ const _find = (el, parent = document) => {
         els = [el];
     } else if (el instanceof NodeList) {
         els = el;
+    } else if (el instanceof Window || el instanceof Document) {
+        els = [el];
     }
 
     // Log if no elements were found
     if (els.length === 0) {
-        _libbyLog("[_find] No elements found:", el);
+        _libbyLog("[_find] No elements found:", el, parent);
     }
 
     return els;
@@ -237,10 +241,10 @@ const _removeClass = (el, classNames) => {
  * @param {boolean} [decode=true] - Whether to decode the string
  * @returns {HTMLElement} The HTML element
  * */
-const _toHTML = (str, decode = true) => {
+const _parseHTML = (str, decode = true) => {
 
     if (!str) {
-        _libbyLog("[_toHTML] Invalid string:", str);
+        _libbyLog("[_parseHTML] Invalid string:", str);
         return null;
     }
 
@@ -464,20 +468,20 @@ const _libbyInit = () => {
     window._toggleClass = _toggleClass;
     window._addClass = _addClass;
     window._removeClass = _removeClass;
-    window._toHTML = _toHTML;
+    window._parseHTML = _parseHTML;
     window._inViewport = _inViewport;
     window._persist = _persist;
     window._persistGet = _persistGet;
     window._persistRemove = _persistRemove;
     window._libbyLog = _libbyLog;
 }
+_libbyInit();
 
 // Dispatch a ready event when the window is loaded
-window.onload = function () {
-    _libbyInit();
+document.addEventListener("DOMContentLoaded", function (event) {
     window._libbyReady = true;
     _dispatch(window, "libby:ready");
-}
+});
 
 // Export functions, utilized to setup TypeScript types
 export {
@@ -491,7 +495,7 @@ export {
     _toggleClass,
     _addClass,
     _removeClass,
-    _toHTML,
+    _parseHTML,
     _debounce,
     _inViewport,
     _persist,

@@ -160,7 +160,7 @@ Alternatively, you can also use `_persist(key)` to retrieve the stored value.
 
 ```javascript
 const htmlString = '<div class="alert">Hello!</div>';
-const element = _toHTML(htmlString);
+const element = _parseHTML(htmlString);
 document.body.append(element);
 ```
 

@@ -9,7 +9,7 @@ import {
     _toggleClass as _toggleClassType,
     _addClass as _addClassType,
     _removeClass as _removeClassType,
-    _toHTML as _toHTMLType,
+    _parseHTML as _parseHTMLType,
     _debounce as _debounceType,
     _inViewport as _inViewportType,
     _persist as _persistType,
@@ -30,7 +30,7 @@ declare global {
     var _toggleClass: typeof _toggleClassType;
     var _addClass: typeof _addClassType;
     var _removeClass: typeof _removeClassType;
-    var _toHTML: typeof _toHTMLType;
+    var _parseHTML: typeof _parseHTMLType;
     var _debounce: typeof _debounceType;
     var _inViewport: typeof _inViewportType;
     var _persist: typeof _persistType;
