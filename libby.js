@@ -33,7 +33,7 @@ const _find = (el, parent = document) => {
     }
 
     return els;
-}
+};
 
 /**
  * Get an element by selector
@@ -43,7 +43,7 @@ const _find = (el, parent = document) => {
  */
 const _el = (selector, parent = document) => {
     return _find(selector, parent)[0] || null;
-}
+};
 
 /**
  * Get multiple elements by selector
@@ -72,16 +72,20 @@ const _dispatch = (el, eventName, detail = {}, delay = 0) => {
     try {
         if (delay) {
             setTimeout(function () {
-                _el.dispatchEvent(new CustomEvent(eventName, {
-                    detail: detail
-                }));
+                _el.dispatchEvent(
+                    new CustomEvent(eventName, {
+                        detail: detail,
+                    }),
+                );
             }, delay);
         }
         // Dispatch the event immediately
         else {
-            _el.dispatchEvent(new CustomEvent(eventName, {
-                detail: detail
-            }));
+            _el.dispatchEvent(
+                new CustomEvent(eventName, {
+                    detail: detail,
+                }),
+            );
         }
 
         _libbyLog("[_dispatch]", eventName, delay);
@@ -93,11 +97,11 @@ const _dispatch = (el, eventName, detail = {}, delay = 0) => {
 /**
  * Add an event listener to one or more elements.
  * Returns an array of event listeners so they can be removed later.
- * 
+ *
  * @param {Element | Window | Document | NodeList | string} el - The element(s) to add the event listener to
  * @param {string} eventName - The name of the event
  * @param {function} callback - The callback function
- * 
+ *
  * @returns {object[]} An array of event listeners
  */
 const _on = (el, eventName, callback) => {
@@ -109,7 +113,7 @@ const _on = (el, eventName, callback) => {
     const eventListeners = [];
 
     // Add event listener to each element
-    els.forEach(element => {
+    els.forEach((element) => {
         const eventListener = (e) => {
             callback(e, e.detail); // Invoke the callback with event and optional detail
         };
@@ -122,7 +126,7 @@ const _on = (el, eventName, callback) => {
         eventListeners.push({
             remove: function () {
                 element.removeEventListener(eventName, eventListener);
-            }
+            },
         });
     });
 
@@ -131,11 +135,11 @@ const _on = (el, eventName, callback) => {
 
 /**
  * Add an event listener to one or more elements that only runs once.
- * 
+ *
  * @param {Element | Window | Document | NodeList | string} el - The element(s) to add the event listener to
  * @param {string} eventName - The name of the event
  * @param {function} callback - The callback function
- * 
+ *
  * @returns {object[]} An array of event listeners
  */
 const _once = (el, eventName, callback) => {
@@ -147,7 +151,7 @@ const _once = (el, eventName, callback) => {
     const eventListeners = [];
 
     // Add event listener to each element
-    els.forEach(element => {
+    els.forEach((element) => {
         const eventListener = (e) => {
             callback(e, e.detail); // Invoke the callback with event and optional detail
         };
@@ -161,7 +165,7 @@ const _once = (el, eventName, callback) => {
         eventListeners.push({
             remove: function () {
                 element.removeEventListener(eventName, eventListener);
-            }
+            },
         });
     });
 
@@ -181,11 +185,11 @@ const _is = (el, selector) => {
     if (!_el) return;
 
     return _el.matches(selector);
-}
+};
 
 /**
  * Toggle one or more classes on one or more elements.
- * 
+ *
  * @param {Element | NodeList | string} el - The element(s) to toggle the class on
  * @param {string | string[]} classNames - The class name(s) to toggle
  * @param {boolean | null} [toggleOnValue=null] - Whether to add/remove classes based on this value, or toggle if null
@@ -200,8 +204,8 @@ const _toggleClass = (el, classNames, toggleOnValue = null) => {
     const classes = Array.isArray(classNames) ? classNames : classNames.split(/\s+/);
 
     // Toggle classes for each element
-    els.forEach(element => {
-        classes.forEach(className => {
+    els.forEach((element) => {
+        classes.forEach((className) => {
             if (toggleOnValue === null) {
                 element.classList.toggle(className);
             } else if (toggleOnValue) {
@@ -216,24 +220,24 @@ const _toggleClass = (el, classNames, toggleOnValue = null) => {
 /**
  * Add one or more classes to an element.
  * A wrapper for _toggleClass with toggleOnValue set to true.
- * 
+ *
  * @param {Element | NodeList | string} el - The element(s) to add the class to
  * @param {string | string[]} classNames - The class name(s) to add
  */
 const _addClass = (el, classNames) => {
     _toggleClass(el, classNames, true);
-}
+};
 
 /**
  * Remove one or more classes from an element.
  * A wrapper for _toggleClass with toggleOnValue set to false.
- * 
+ *
  * @param {Element | NodeList | string} el - The element(s) to remove the class from
  * @param {string | string[]} classNames - The class name(s) to remove
  */
 const _removeClass = (el, classNames) => {
     _toggleClass(el, classNames, false);
-}
+};
 
 /**
  * Convert a string to an HTML element
@@ -242,14 +246,13 @@ const _removeClass = (el, classNames) => {
  * @returns {HTMLElement} The HTML element
  * */
 const _parseHTML = (str, decode = true) => {
-
     if (!str) {
         _libbyLog("[_parseHTML] Invalid string:", str);
         return null;
     }
 
     if (decode) {
-        const textarea = document.createElement('textarea');
+        const textarea = document.createElement("textarea");
         textarea.innerHTML = str;
         str = textarea.value;
     }
@@ -257,7 +260,7 @@ const _parseHTML = (str, decode = true) => {
     const parser = new DOMParser();
     const doc = parser.parseFromString(str, "text/html");
     return doc.body.innerHTML;
-}
+};
 
 /**
  * Debounce a function
@@ -272,7 +275,8 @@ const _debounce = (func, wait, immediate = false) => {
     var timeout;
     _libbyLog("[_debounce] Debounce event set", wait);
     return function () {
-        var context = this, args = arguments;
+        var context = this,
+            args = arguments;
         clearTimeout(timeout);
         timeout = setTimeout(function () {
             timeout = null;
@@ -280,11 +284,11 @@ const _debounce = (func, wait, immediate = false) => {
         }, wait);
         if (immediate && !timeout) func.apply(context, args);
     };
-}
+};
 
 /**
  * Check if an element is visible in the viewport of a given container
- * 
+ *
  * @param {Element | string} el - The element to check
  * @param {Element | Window | string} target - The container element (e.g., scrollable div). Use `window` for the default viewport.
  * @param {number} offset - Offset to adjust the visibility threshold (default is half of the current innerHeight - From bottom)
@@ -300,23 +304,13 @@ const _inViewport = (el, target, offset = window.innerHeight / 2) => {
     const rect = _el.getBoundingClientRect();
 
     if (target === window) {
-        return (
-            rect.top < window.innerHeight - offset &&
-            rect.bottom > 0 &&
-            rect.left < window.innerWidth &&
-            rect.right > 0
-        );
+        return rect.top < window.innerHeight - offset && rect.bottom > 0 && rect.left < window.innerWidth && rect.right > 0;
     } else {
         const targetRect = _target.getBoundingClientRect();
 
-        return (
-            rect.top < targetRect.bottom - offset &&
-            rect.bottom > targetRect.top &&
-            rect.left < targetRect.right &&
-            rect.right > targetRect.left
-        );
+        return rect.top < targetRect.bottom - offset && rect.bottom > targetRect.top && rect.left < targetRect.right && rect.right > targetRect.left;
     }
-}
+};
 
 /**
  * Store data in localStorage, sessionStorage, or cookies with an optional expiration time
@@ -347,9 +341,7 @@ const _persist = (key, data = null, expirationTime = 604800) => {
             storage.setItem(key, JSON.stringify(value));
         } else {
             // Fallback to cookies if both localStorage and sessionStorage are unavailable
-            const expires = expirationTime && typeof expirationTime === "number"
-                ? `; expires=${new Date(Date.now() + expirationTime).toUTCString()}`
-                : '';
+            const expires = expirationTime && typeof expirationTime === "number" ? `; expires=${new Date(Date.now() + expirationTime).toUTCString()}` : "";
             document.cookie = `${key}=${encodeURIComponent(JSON.stringify(value))}${expires}; path=/`;
         }
 
@@ -398,13 +390,12 @@ const _persistGet = (key) => {
         // Fallback to cookies if not found in localStorage/sessionStorage
         if (!value) {
             storageType = "cookie";
-            const cookies = document.cookie.split('; ');
-            const cookie = cookies.find(row => row.startsWith(`${key}=`));
+            const cookies = document.cookie.split("; ");
+            const cookie = cookies.find((row) => row.startsWith(`${key}=`));
             if (cookie) {
-                value = JSON.parse(decodeURIComponent(cookie.split('=')[1]));
+                value = JSON.parse(decodeURIComponent(cookie.split("=")[1]));
             }
         }
-
     } catch (error) {
         _libbyLog("[_persistGet] Error retrieving data:", error);
     }
@@ -450,13 +441,13 @@ const _persistRemove = (key) => {
 
 // Log messages to the console if the body has a .dev class
 const _libbyLog = (...params) => {
-    if (_is("body", ".dev")) {
-        console.debug(...params);
-    }
-}
+    if (_is("body", ".dev")) return console.debug(...params);
+};
 
 // Add the functions to the window object
 const _libbyInit = () => {
+    if (window._libbyReady) return;
+
     window._debounce = _debounce;
     window._dispatch = _dispatch;
     window._find = _find;
@@ -474,11 +465,13 @@ const _libbyInit = () => {
     window._persistGet = _persistGet;
     window._persistRemove = _persistRemove;
     window._libbyLog = _libbyLog;
-}
+};
 _libbyInit();
 
 // Dispatch a ready event when the window is loaded
 document.addEventListener("DOMContentLoaded", function (event) {
+    if (window._libbyReady) return;
+
     window._libbyReady = true;
     _dispatch(window, "libby:ready");
 });
@@ -502,5 +495,5 @@ export {
     _persistGet,
     _persistRemove,
     _libbyLog,
-    _libbyInit
+    _libbyInit,
 };
