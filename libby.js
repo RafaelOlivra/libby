@@ -288,18 +288,17 @@ const _debounce = (func, wait, immediate = false) => {
 
 /**
  * Check if an element is visible in the viewport of a given container
- *
- * @param {Element | string} el - The element to check
- * @param {Element | Window | string} target - The container element (e.g., scrollable div). Use `window` for the default viewport.
+ * @param {Element | string} el - The element to check.
+ * @param {Element | Window | string} target - The container element (e.g., scrollable div). Uses `window` as the default viewport.
  * @param {number} offset - Offset to adjust the visibility threshold (default is half of the current innerHeight - From bottom)
  * @returns {boolean} - True if the element is in the viewport of the target, false otherwise
  */
 const _inViewport = (el, target, offset = window.innerHeight / 2) => {
     const _el = _find(el)[0];
-    const _target = _find(target)[0];
+    const _target = target ? _find(target)[0] : window;
 
     // Bail if no element was found
-    if (!_el || !_target) return;
+    if (!_el || !_target) return false;
 
     const rect = _el.getBoundingClientRect();
 
