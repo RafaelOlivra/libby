@@ -277,12 +277,12 @@ const _debounce = (func, wait, immediate = false) => {
     return function () {
         var context = this,
             args = arguments;
+        if (immediate) func.apply(context, args);
         clearTimeout(timeout);
         timeout = setTimeout(function () {
             timeout = null;
-            if (!immediate) func.apply(context, args);
+            func.apply(context, args);
         }, wait);
-        if (immediate && !timeout) func.apply(context, args);
     };
 };
 
