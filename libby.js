@@ -56,6 +56,29 @@ const _els = (selector, parent = document) => {
 };
 
 /**
+ * Remove elements by selector
+ * @param {string} selector - CSS selector
+ * @param {Element | Document} [parent=document] - Parent element to search from
+ * @return {boolean} True if the elements were removed, false otherwise
+ */
+const _remove = (selector, parent = document) => {
+    const _els = _find(selector, parent);
+
+    // Bail if no elements were found
+    if (_els.length === 0) return false;
+
+    try {
+        _els.forEach((el) => el.remove());
+        _libbyLog("[_remove] Elements removed:", _els);
+        return true;
+    } catch (error) {
+        _libbyLog("[_remove] Error removing elements:", error, _els);
+    }
+
+    return false;
+};
+
+/**
  * Dispatch a custom event
  * @param {Element | Window | string} el - The element to dispatch the event on
  * @param {string} eventName - The name of the event
@@ -464,6 +487,7 @@ const _libbyInit = () => {
     window._find = _find;
     window._el = _el;
     window._els = _els;
+    window._remove = _remove;
     window._on = _on;
     window._once = _once;
     window._is = _is;
@@ -493,6 +517,7 @@ export {
     _find,
     _el,
     _els,
+    _remove,
     _dispatch,
     _on,
     _once,
