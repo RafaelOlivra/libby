@@ -15,7 +15,6 @@
 - 💾 **Persistence**: Store data in localStorage, sessionStorage, or cookies.
 - 🌐 **URL Utilities**: Easily retrieve query parameters.
 - 📡 **Cross-Browser**: Works in all modern browsers.
-- 🪶 **Lightweight**: ~3KB minified (1.5KB gzipped).
 
 ---
 
