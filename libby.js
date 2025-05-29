@@ -1,5 +1,5 @@
 /**
- * RO Libby v1.0.4
+ * RO Libby v1.0.6
  * A collection of reusable JS utility functions that can be used in any project.
  * Released under the MIT license
  */
@@ -263,6 +263,18 @@ const _parseHTML = (str, decode = true) => {
 };
 
 /**
+ * Get a URL parameter by name
+ * @param {string} name - The name of the parameter
+ * @param {string | null} [defaultValue=null] - The default value to return if the parameter is null
+ * @returns {string | null} The value of the parameter or the default value if null
+ */
+const _getUrlParam = (name, defaultValue = null) => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const value = urlParams.get(name);
+    return value !== null ? value : defaultValue;
+};
+
+/**
  * Debounce a function
  * @https://gist.github.com/nmsdvid/8807205
  *
@@ -459,6 +471,7 @@ const _libbyInit = () => {
     window._addClass = _addClass;
     window._removeClass = _removeClass;
     window._parseHTML = _parseHTML;
+    window._getUrlParam = _getUrlParam;
     window._inViewport = _inViewport;
     window._persist = _persist;
     window._persistGet = _persistGet;
@@ -488,6 +501,7 @@ export {
     _addClass,
     _removeClass,
     _parseHTML,
+    _getUrlParam,
     _debounce,
     _inViewport,
     _persist,
