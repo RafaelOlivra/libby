@@ -242,7 +242,7 @@ _on(scrollArea, "scroll", () => {
 
 ## Debugging
 
-Enable debug logs:
+Enable libby debug logs (Not available on .min version):
 
 ```html
 <body class="dev"></body>

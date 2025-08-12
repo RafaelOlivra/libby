@@ -1,0 +1,6 @@
+{
+  "compress": {
+    "pure_funcs": ["_libbyLog"]
+  },
+  "mangle": true
+}
