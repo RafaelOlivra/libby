@@ -1,0 +1,10 @@
+{
+  "name": "libby",
+  "version": "1.0.7",
+  "scripts": {
+    "build": "terser libby.js -o libby.min.js -c -m"
+  },
+  "devDependencies": {
+    "terser": "^5.31.0"
+  }
+}
