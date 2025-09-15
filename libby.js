@@ -267,7 +267,7 @@ const _removeClass = (el, classNames) => {
  * @param {string} str - The string to convert
  * @param {boolean} [decode=true] - Whether to decode the string
  * @returns {HTMLElement} The HTML element
- * */
+ */
 const _parseHTML = (str, decode = true) => {
     if (!str) {
         _libbyLog("[_parseHTML] Invalid string:", str);
@@ -282,7 +282,8 @@ const _parseHTML = (str, decode = true) => {
 
     const parser = new DOMParser();
     const doc = parser.parseFromString(str, "text/html");
-    return doc.body.innerHTML;
+
+    return doc.body.firstChild;
 };
 
 /**
