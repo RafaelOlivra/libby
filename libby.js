@@ -506,12 +506,21 @@ const _libbyInit = () => {
 _libbyInit();
 
 // Dispatch a ready event when the window is loaded
-document.addEventListener("DOMContentLoaded", function (event) {
-    if (window._libbyReady) return;
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", async () => {
+        if (window._libbyReady) return;
 
-    window._libbyReady = true;
-    _dispatch(window, "libby:ready");
-});
+        window._libbyReady = true;
+        _dispatch(window, "libby:ready");
+    });
+} else {
+    setTimeout(async () => {
+        if (window._libbyReady) return;
+
+        window._libbyReady = true;
+        _dispatch(window, "libby:ready");
+    }, 0);
+}
 
 // Export functions, utilized to setup TypeScript types
 export {

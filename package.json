@@ -2,9 +2,13 @@
   "name": "libby",
   "version": "1.0.7",
   "scripts": {
-    "build": "terser libby.js -o libby.min.js --config-file terser.config.json"
+    "build": "terser libby.js -o libby.min.js --config-file terser.config.json",
+    "watch": "npx --package chokidar-cli chokidar 'libby.js' -c 'npm run build'"
   },
   "devDependencies": {
     "terser": "^5.31.0"
+  },
+  "dependencies": {
+    "chokidar": "^4.0.3"
   }
 }
