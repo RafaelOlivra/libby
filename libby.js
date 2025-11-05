@@ -11,7 +11,7 @@
  * @param {string | Window | Document | Element | NodeList} el - The element(s) to find
  * @param {string} selector - The CSS selector to match
  * @param {Element | Document} [parent=document] - The parent element to search from
- * @returns {NodeList | Element[]} The elements that match the selector
+ * @returns {(Element | Document | Window)[]} The elements that match the selector
  */
 const _find = (el, parent = document) => {
     let els = [];
@@ -39,7 +39,7 @@ const _find = (el, parent = document) => {
  * Get an element by selector
  * @param {string} selector - CSS selector
  * @param {Element | Document} [parent=document] - Parent element to search from
- * @returns {Element | null} The element or null if not found
+ * @returns {Element} The element that match the selector
  */
 const _el = (selector, parent = document) => {
     return _find(selector, parent)[0] || null;
@@ -49,7 +49,7 @@ const _el = (selector, parent = document) => {
  * Get multiple elements by selector
  * @param {string} selector - CSS selector
  * @param {Element | Document} [parent=document] - Parent element to search from
- * @returns {NodeList | Element[]} The elements
+ * @returns {Element[]} The elements that match the selector
  */
 const _els = (selector, parent = document) => {
     return _find(selector, parent);
