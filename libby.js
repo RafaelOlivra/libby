@@ -519,7 +519,7 @@ if (document.readyState === "loading") {
 
         window._libbyReady = true;
         _dispatch(window, "libby:ready");
-    }, 0);
+    }, 100);
 }
 
 // Export functions, utilized to setup TypeScript types
